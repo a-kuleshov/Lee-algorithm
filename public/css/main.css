@@ -1,0 +1,44 @@
+.form {
+    display: table;
+}
+
+.div__for_field {
+    /*background-color: red;*/
+    display: table;
+}
+
+.row {
+    /*background-color: blue;*/
+    display: table-row;
+}
+
+.cell {
+    /*margin: 10px;*/
+    display: table-cell;
+}
+
+.kernel {
+    height: 40px;
+    width:  40px;
+    margin: 5px;
+}
+
+.kernel.enabled {
+    background-color: green;
+}
+
+.kernel.disabled {
+    background-color: red;
+}
+
+.kernel.path {
+    background-color: black;
+}
+
+.kernel.ui-selecting {
+    background: #FECA40;
+}
+
+.kernel.ui-selected {
+    background: #FEFF40;
+}
