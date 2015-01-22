@@ -42,3 +42,7 @@
 .kernel.ui-selected {
     background: #FEFF40;
 }
+
+.hidden {
+    visibility: hidden !important;
+}

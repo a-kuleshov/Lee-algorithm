@@ -2,14 +2,15 @@
 % title 'main';
 <h2><%= $msg %></h2>
 <div class="form" >
-    <input type="number" id="input_x" value="20">
-    <input type="number" id="input_y" value="20">
+    <input type="number" id="input_x" class="size_input" value="20">
+    <input type="number" id="input_y" class="size_input" value="20">
     <input type="button" id="start-button" class="btn btn-success" value="open" >
-    <select id='action'>
-        <option value="tougle_blocked">tougle_blocked</option>
-        <option value="mark_start">mark_start</option>
-        <option value="go">go</option>
-    </select>
+    <input type="button" id="mark-disabled-button" class="btn btn-success hide" value="Пометить недоступными">
+    <input type="button" id="mark-enabled-button" class="btn btn-success hide" value="Пометить доступными" >
+    <input type="button" id="go-button" class="btn btn-success hide" value="Найти путь" >
+</div>
+<div id="notificator">
+
 </div>
 <div class="div__for_field">
 </div>

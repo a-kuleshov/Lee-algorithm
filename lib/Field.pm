@@ -46,6 +46,11 @@ sub mark_as_blocked {
     $self->{field}[$x][$y] = BLOCKED;
 }
 
+sub mark_as_unblocked {
+    my ( $self, $x, $y ) = @_;
+    $self->{field}[$x][$y] = UNMARKED;
+}
+
 sub map {
     my ( $self, $from_x, $from_y ) = @_;
     $self->{field}[$from_x][$from_y] = 0;
@@ -78,12 +83,10 @@ sub go {
     my $current_cell = [$to_x, $to_y];
     my $path = [];
         while ($self->{field}->[$current_cell->[0]][$current_cell->[1]] != 0) {
-        # use Data::Dumper; warn Dumper ($current_cell);
         my $min = $self->find_min($current_cell);
         $current_cell = [ $min->[0] + $current_cell->[0], $min->[1] + $current_cell->[1]];
         push @$path, $current_cell;
     }
-    # use Data::Dumper; warn Dumper ($path);
     $self->{field}->[$_->[0]][$_->[1]] = 99 for @$path;
     return $path;
 }
@@ -91,7 +94,6 @@ sub go {
 sub find_min {
     my ($self, $main_cell) = @_;
     my $min = [0,0];
-    # warn "\n" x 5;
     foreach my $locality (@{$self->{mark_locality}}) {
         my $x_to_be_checked = $main_cell->[0] + $locality->[0];
         my $y_to_be_checked = $main_cell->[1] + $locality->[1];
@@ -105,9 +107,6 @@ sub find_min {
             my $current_min_x = $main_cell->[0] + $min->[0];
             my $current_min_y = $main_cell->[1] + $min->[1];
             $min = [@$locality] if $self->{field}->[$x_to_be_checked][$y_to_be_checked] < $self->{field}->[ $current_min_x ][ $current_min_y];
-            # warn "$self->{field}->[$x_to_be_checked][$y_to_be_checked] < $self->{field}->[ $current_min_x ][ $current_min_y] || $locality->[0]  $locality->[1]";
-            # use Data::Dumper; warn Dumper ($locality);
-            # use Data::Dumper; warn Dumper ($min);
         }
     };
     return $min;

@@ -27,6 +27,7 @@ function create_field (argument) {
     send(data);
 }
 function show_field (data) {
+    $('.size_input').addClass('hide');
     $(data.field).each(function(i,row) {
         $('.div__for_field').append('<div class="row" data-row="' + i +'"></div>')
         var new_row = $('[data-row=' + i + ']');
@@ -37,54 +38,71 @@ function show_field (data) {
         });
     });
     $('.div__for_field').selectable({filter: ".kernel"});
-    $('.kernel').click(function(ev) {
-        var cell = $(ev.target);
-        var data = {
-            y : cell.data('row'),
-            x : cell.data('column'),
-        };
-        do_action(data);
+    $('#mark-disabled-button').removeClass('hide').click(function(ev) {
+        $('.kernel.ui-selected').each(function(i,v) {
+            tougle_blocked($(v),false);
+        }).removeClass('ui-selected');
     });
+    $('#mark-enabled-button').removeClass('hide').click(function(ev) {
+        $('.kernel.ui-selected').each(function(i,v) {
+            tougle_blocked($(v),true);
+        }).removeClass('ui-selected');
+    });
+    $('#start-button').addClass('hide').click(function(ev) {
+        $('#go-button').addClass('hide');
+        $('#mark-enabled-button').addClass('hide');
+        $('#mark-disabled-button').addClass('hide');
+        $('.div__for_field').selectable({filter: ".kernel"});
+    });
+    $('#go-button').removeClass('hide').click(function(ev) {
+        $('.kernel.ui-selected').removeClass('ui-selected');
+        $('#mark-enabled-button').addClass('hide');
+        $('#mark-disabled-button').addClass('hide');
+        $('#go-button').addClass('hide');
+        $('.div__for_field').selectable( "destroy" );
+        $('#notificator').text('Выберете начальную точку');
+        $('.kernel').click(function(ev) {
+            var el = $(ev.target);
+            mark_start({
+                x: el.data('column'),
+                y: el.data('row'),
+            })
+            $('#notificator').text('Выберете конечную точку');
+            $('.kernel').unbind('click').click(function(ev) {
+                var el = $(ev.target);
+                go({
+                    x: el.data('column'),
+                    y: el.data('row'),
+                })
+            })
 
-
+        })
+    });
 }
+
+function tougle_blocked (el, on) {
+    var data = {
+        x: el.data('column'),
+        y: el.data('row')
+    }
+    data.action = on
+        ? 'mark_as_unblocked'
+        : 'mark_as_blocked';
+    console.log(data);
+    if(on) {
+        el.removeClass('disabled');
+    } else {
+        el.addClass('disabled');
+    }
+    send(data);
+}
+
 
 function send (data) {
     var string = JSON.stringify(data);
     socket.send(string);
 }
 
-function do_action (data) {
-    action = get_action();
-    switch (action) {
-        case 'tougle_blocked':
-            tougle_blocked(data);
-            break;
-        case 'mark_start':
-            mark_start(data);
-            break;
-        case 'go':
-            go(data);
-            break;
-    }
-}
-
-function get_action () {
-    return $('#action :selected').val();
-}
-
-function tougle_blocked (data) {
-    id = data.y + '-' + data.x;
-    var el = $('#' + id);
-    if(el.hasClass('enabled')) {
-        el.removeClass('enabled').addClass('disabled');
-        data.action = 'mark_as_blocked'
-    } else {
-        el.removeClass('disabled').addClass('enabled');
-        data.action = 'mark_as_unblocked';
-    }
-    send(data);
-}
 
 function mark_start (data) {
     id = data.y + '-' + data.x;

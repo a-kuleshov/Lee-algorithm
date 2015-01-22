@@ -34,7 +34,6 @@ sub create_field {
     my ( $self, $hash ) = @_;
     my $field = Field->new( $hash->{x}, $hash->{y} );
     $self->stash( 'field', $field );
-    use Data::Dumper; warn Dumper ($field->{field});
     $self->send(
         encode_json(
             {   action => 'field_was_created',
@@ -52,9 +51,17 @@ sub show_field {
 
 sub mark_as_blocked {
     my ( $self, $data ) = @_;
+    use Data::Dumper; warn Dumper ($data);
     my $x = $data->{x};
     my $y = $data->{y};
     $self->stash('field')->mark_as_blocked( $x, $y );
+}
+
+sub mark_as_unblocked {
+    my ( $self, $data ) = @_;
+    my $x = $data->{x};
+    my $y = $data->{y};
+    $self->stash('field')->mark_as_unblocked( $x, $y );
 }
 
 sub mark_start {
